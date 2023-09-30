@@ -8,11 +8,12 @@ public class GetWebscraper
     private static async Task<HtmlDocument> Htmlpackage(string url)
     {
         var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri(url);
+        
         var html = await httpClient.GetStringAsync(url);
 
         var htmlDocument = new HtmlDocument();
         htmlDocument.LoadHtml(html);
+        
         return htmlDocument;
     }
 
