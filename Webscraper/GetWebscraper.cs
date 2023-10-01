@@ -20,12 +20,11 @@ public class GetWebscraper
 
     public static async Task YrNoWebscrape()
     {
-
-        Console.WriteLine("Vælg et tal:");
         Console.WriteLine("1. Torshavn");
         Console.WriteLine("2. Aalborg");
         Console.WriteLine("3. København");
         Console.WriteLine("4. Skælskør");
+        Console.Write("Vælg et tal: ");
 
         string urlToScrape = "";
         int city = Convert.ToInt32(Console.ReadLine());
@@ -64,9 +63,12 @@ public class GetWebscraper
         var getCity = htmlDocument.DocumentNode.Descendants("h1").Where(node => node.GetAttributeValue("class", "page-header__location").Contains(""));
         var getCityInfo = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("page-header__location-details"));
 
-        foreach (var item in getCity) { await Console.Out.WriteLineAsync(item.InnerText.Trim()); await Console.Out.WriteLineAsync(); }
 
-        foreach (var item in getCityInfo) { await Console.Out.WriteLineAsync(item.InnerText.Trim()); await Console.Out.WriteLineAsync(); }
+        Console.WriteLine();
+
+        foreach (var item in getCity) { Console.WriteLine(item.InnerText.Trim()); Console.WriteLine(); }
+
+        foreach (var item in getCityInfo) { Console.WriteLine(item.InnerText.Trim()); Console.WriteLine(); }
 
         if (getDate.Count == getTemperature.Count)
         {
