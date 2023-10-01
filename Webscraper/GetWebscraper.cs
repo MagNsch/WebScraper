@@ -53,7 +53,6 @@ public class GetWebscraper
         HtmlDocument htmlDocument = await Htmlpackage(urlToScrape);
 
         await Scrapesite(htmlDocument);
-
     }
 
     private static async Task Scrapesite(HtmlDocument htmlDocument)
