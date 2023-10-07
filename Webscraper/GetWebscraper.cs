@@ -1,10 +1,12 @@
 ﻿using HtmlAgilityPack;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Channels;
+using System.Xml.Linq;
 
 namespace Webscraper;
 
 public class GetWebscraper
 {
-
     private static async Task<HtmlDocument> Htmlpackage(string url)
     {
         var httpClient = new HttpClient();
@@ -58,10 +60,30 @@ public class GetWebscraper
     private static async Task Scrapesite(HtmlDocument htmlDocument)
     {
         var getDate = htmlDocument.DocumentNode.Descendants("h3").Where(node => node.GetAttributeValue("class", "").Contains("daily-weather-list-item__date-heading")).ToList();
-        var getTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("temperature min-max-temperature__max temperature--warm")).ToList();
+        var getHighestTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("temperature min-max-temperature__max temperature--warm")).ToList();
+        var getLowestTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("temperature min-max-temperature__min temperature--warm")).ToList();
         var getCity = htmlDocument.DocumentNode.Descendants("h1").Where(node => node.GetAttributeValue("class", "page-header__location").Contains(""));
+
+        var getWindyWeather = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("wind daily-weather-list-item__wind-value"))
+        .Select(node => node.InnerText.Trim())
+        .Select(value =>
+        {
+            int index = value.IndexOf("0");
+            if (index >= 0) { return value.Remove(index, 1); } // Fjern den første forekomst af "0"
+            return value;
+        }).DefaultIfEmpty("null").ToList();
+
+        var getIfItsRaining = htmlDocument.DocumentNode.Descendants("span")
+        .Where(node => node.GetAttributeValue("class", "daily-weather-list-item__precipitation").Contains("Precipitation-module__main-sU6qN"))
+        .Select(node => node.InnerText.Trim())
+        .DefaultIfEmpty("0")
+        .ToList();
+
+
         var getCityInfo = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("page-header__location-details"));
 
+
+        //Starts printing
 
         Console.WriteLine();
 
@@ -69,12 +91,40 @@ public class GetWebscraper
 
         foreach (var item in getCityInfo) { Console.WriteLine(item.InnerText.Trim()); Console.WriteLine(); }
 
-        if (getDate.Count == getTemperature.Count)
+        if (getDate.Count == getHighestTemperature.Count && getLowestTemperature.Count == getDate.Count && getWindyWeather.Count == getDate.Count)
         {
             for (int i = 0; i < getDate.Count; i++)
             {
-                Console.WriteLine(getDate[i].InnerText.Trim() + " Temperatur: " + getTemperature[i].InnerText.Trim());
+                string getAllDataFromWebsiteAndPrint = $"{getDate[i].InnerText.Trim().PadRight(20)} " +
+                $"Højeste Temperatur i dag: {getHighestTemperature[i].InnerText.Trim().PadRight(5)} " +
+                $"Laveste temperatur i dag: {getLowestTemperature[i].InnerText.Trim().PadRight(5)} " +
+                $"Blæser i dag: {getWindyWeather[i].PadLeft(2)}" + "    " +
+                $"Regn i dag: {getIfItsRaining[i].PadLeft(10)}";
+
+                Console.Out.WriteLine(getAllDataFromWebsiteAndPrint);
             }
         }
     }
+
+    //Uden at bruge LINQ
+
+    //    var getDate = new List<HtmlNode>();
+    //    var nodes = htmlDocument.DocumentNode.Descendants("h3");
+
+    //      foreach (var node in nodes)
+    //      {
+    //          var classAttribute = node.GetAttributeValue("class", "");
+    //           if (classAttribute.Contains("daily-weather-list-item__date-heading"))
+    //      {
+    //          getDate.Add(node);
+    //      }
+    //}
+
+    // getDate indeholder nu de ønskede HTML-noder
+
+
+
+
+
+
 }
