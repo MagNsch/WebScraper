@@ -9,9 +9,6 @@ public class Program
     {
         await GetWebscraper.YrNoWebscrape();
 
-
-        GuessingGame game = new GuessingGame();
-
         //game.Game();
     }
 }

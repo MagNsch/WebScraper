@@ -91,6 +91,7 @@ public class GetWebscraper
 
         foreach (var item in getCityInfo) { Console.WriteLine(item.InnerText.Trim()); Console.WriteLine(); }
 
+
         if (getDate.Count == getHighestTemperature.Count && getLowestTemperature.Count == getDate.Count && getWindyWeather.Count == getDate.Count)
         {
             for (int i = 0; i < getDate.Count; i++)
@@ -102,6 +103,7 @@ public class GetWebscraper
                 $"Regn i dag: {getIfItsRaining[i].PadLeft(10)}";
 
                 Console.Out.WriteLine(getAllDataFromWebsiteAndPrint);
+                
             }
         }
     }
