@@ -1,7 +1,4 @@
 ﻿using HtmlAgilityPack;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Channels;
-using System.Xml.Linq;
 
 namespace Webscraper;
 
@@ -103,7 +100,7 @@ public class GetWebscraper
                 $"Regn i dag: {getIfItsRaining[i].PadLeft(10)}";
 
                 Console.Out.WriteLine(getAllDataFromWebsiteAndPrint);
-                
+
             }
         }
     }

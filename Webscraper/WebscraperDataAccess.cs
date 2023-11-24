@@ -1,6 +1,7 @@
 ﻿using DataAccess.Model;
 using HtmlAgilityPack;
 using System.Runtime;
+using System.Xml.Linq;
 
 namespace DataAccess;
 
@@ -25,30 +26,20 @@ public class WebscraperDataAccess : IWebscraperDataAccess
 
     public Task<string> Scrapesite(HtmlDocument htmlDocument)
     {
-        var getDate = htmlDocument.DocumentNode.Descendants("h3").Where(node => node.GetAttributeValue("class", "").Contains("daily-weather-list-item__date-heading")).ToList();
-        var getHighestTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("temperature min-max-temperature__max temperature--warm")).ToList();
-        var getLowestTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("temperature min-max-temperature__min temperature--warm")).ToList();
-        var getWindyWeather = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("wind daily-weather-list-item__wind-value"))
-            .Select(node => node.InnerText.Trim())
-            .Select(value =>
-            {
-                int index = value.IndexOf("0");
-                if (index >= 0) { return value.Remove(index, 1); } // Fjern den første forekomst af "0"
-                return value;
-            }).DefaultIfEmpty("null").ToList();
-
-        var getIfItsRaining = htmlDocument.DocumentNode.Descendants("span")
-            .Where(node => node.GetAttributeValue("class", "daily-weather-list-item__precipitation").Contains("Precipitation-module__main-sU6qN"))
-            .Select(node => node.InnerText.Trim())
-            .DefaultIfEmpty("0")
-            .ToList();
+        List<HtmlNode> getDate = GetTheUpcomingDays(htmlDocument);
+        List<string> getHighestTemperature = GetHighestTemperature(htmlDocument);
+        List<string> getLowestTemperature = GetLowestTemperature(htmlDocument);
+        List<string> getWindyWeather = GetWindyWeather(htmlDocument);
+        List<string> getIfItsRaining = GetIfItsRaining(htmlDocument);
 
         var allDataList = new List<string>();
         for (int i = 0; i < getDate.Count; i++)
         {
             string dateText = $"{getDate[i].InnerText.Trim()}".PadRight(18);
-            string maxTempText = $"Højeste Temperatur i dag: {getHighestTemperature[i].InnerText.Trim()}".PadRight(30);
-            string minTempText = $"Laveste temperatur i dag: {getLowestTemperature[i].InnerText.Trim()}".PadRight(30);
+            string maxTempText = $"Højeste Temperatur i dag: {getHighestTemperature[i]}".PadRight(30);
+            string minTempText = $"Laveste temperatur i dag: {getLowestTemperature[i]}".PadRight(30);
+
+
             string windyText = $"Blæser i dag: {getWindyWeather[i]}".PadRight(20);
             string rainText = $"Regn i dag: {getIfItsRaining[i]}".PadRight(30);
 
@@ -60,6 +51,81 @@ public class WebscraperDataAccess : IWebscraperDataAccess
         return Task.FromResult(allDataAsString);
     }
 
+    private static List<HtmlNode> GetTheUpcomingDays(HtmlDocument htmlDocument)
+    {
+        return htmlDocument.DocumentNode.Descendants("h3").Where(node => node.GetAttributeValue("class", "").Contains("daily-weather-list-item__date-heading")).ToList();
+    }
+
+    private static List<string> GetHighestTemperature(HtmlDocument htmlDocument)
+    {
+        return htmlDocument.DocumentNode.Descendants("span")
+            .Where(node =>
+                node.GetAttributeValue("class", "")
+                    .Split(' ')
+                    .Contains("temperature") &&
+                node.GetAttributeValue("class", "").Contains("min-max-temperature__max") &&
+                (node.GetAttributeValue("class", "").Contains("temperature--warm") ||
+                 node.GetAttributeValue("class", "").Contains("temperature--cold"))
+            )
+            .Select(node =>
+            {
+                string temperatureValue = node.InnerText.Trim();
+
+                if (node.GetAttributeValue("class", "").Contains("temperature--warm"))
+                {
+                    temperatureValue = "+" + temperatureValue;
+                }
+
+                return temperatureValue;
+            })
+            .ToList();
+    }
+
+    private static List<string> GetIfItsRaining(HtmlDocument htmlDocument)
+    {
+        return htmlDocument.DocumentNode.Descendants("span")
+                    .Where(node => node.GetAttributeValue("class", "daily-weather-list-item__precipitation").Contains("Precipitation-module__main-sU6qN"))
+                    .Select(node => node.InnerText.Trim())
+                    .DefaultIfEmpty("0")
+                    .ToList();
+    }
+
+    private static List<string> GetWindyWeather(HtmlDocument htmlDocument)
+    {
+        var getWindyWeather = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("wind daily-weather-list-item__wind-value"))
+                    .Select(node => node.InnerText.Trim())
+                    .Select(value =>
+                    {
+                        int index = value.IndexOf("0");
+                        if (index >= 0) { return value.Remove(index, 1); } // Fjern den første forekomst af "0"
+                        return value;
+                    }).DefaultIfEmpty("null").ToList();
+        return getWindyWeather;
+    }
+
+    private static List<string> GetLowestTemperature(HtmlDocument htmlDocument)
+    {
+        return htmlDocument.DocumentNode.Descendants("span")
+            .Where(node =>
+                node.GetAttributeValue("class", "")
+                    .Split(' ')
+                    .Contains("temperature") &&
+                node.GetAttributeValue("class", "").Contains("min-max-temperature__min") &&
+                (node.GetAttributeValue("class", "").Contains("temperature--warm") ||
+                 node.GetAttributeValue("class", "").Contains("temperature--cold"))
+            )
+            .Select(node =>
+            {
+                string temperatureValue = node.InnerText.Trim();
+
+                if (node.GetAttributeValue("class", "").Contains("temperature--warm"))
+                {
+                    temperatureValue = "+" + temperatureValue;
+                }
+                return temperatureValue;
+            })
+            .ToList();
+    }
 
     public Task<string> ScrapeCity(HtmlDocument htmlDocument)
     {
@@ -71,7 +137,7 @@ public class WebscraperDataAccess : IWebscraperDataAccess
             allDataList.Add(city);
             string allDataAsString = string.Join(Environment.NewLine, allDataList);
             return Task.FromResult(allDataAsString);
-            
+
         }
         return Task.FromResult(string.Empty);
     }

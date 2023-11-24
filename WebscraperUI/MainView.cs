@@ -3,11 +3,11 @@ using DataAccess.Model;
 
 namespace WebscraperUI;
 
-public partial class Form1 : Form
+public partial class MainView : Form
 {
     static List<Website> websites = new List<Website>();
     IWebscraperDataAccess _webScraperDataAccess = new WebscraperDataAccess();
-    public Form1()
+    public MainView()
     {
         InitializeComponent();
         List<Website> list = new List<Website>();
