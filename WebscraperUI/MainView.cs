@@ -10,24 +10,46 @@ public partial class MainView : Form
     public MainView()
     {
         InitializeComponent();
-        List<Website> list = new List<Website>();
         CreateWebsites();
+
     }
+
+
+    public void AddWebsiteToList(Website website)
+    {
+        websites.Add(website);
+
+        Websites_List.DataSource = websites;
+    }
+
+
 
     private void CreateWebsites()
     {
-
         Website website = new Website() { Id = 1, City = "Skælskør", Url = "https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/2-2613694/Danmark/Region%20Sj%C3%A6lland/Slagelse/Sk%C3%A6lsk%C3%B8r" };
         Website website2 = new Website() { Id = 2, City = "Aalborg", Url = "https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/2-2624886/Danmark/Nordjylland/%C3%85lborg/Aalborg" };
 
-        websites.Add(website);
-        websites.Add(website2);
+        if (!websites.Any(w => w.Id == website.Id))
+        {
+            websites.Add(website);
+        }
+
+        // Samme kontrol for det andet websted
+        if (!websites.Any(w => w.Id == website2.Id))
+        {
+            websites.Add(website2);
+        }
 
         Websites_List.Items.Clear();
-
         foreach (var item in websites)
         {
             Websites_List.Items.Add(item);
+        }
+
+        // Starter programmet med det første element, hvis listen ikke er tom
+        if (websites.Count > 0)
+        {
+            Websites_List.SelectedIndex = 0;
         }
     }
 
@@ -55,5 +77,16 @@ public partial class MainView : Form
 
 
 
+    }
+
+    private void ButtonCreate_Click(object sender, EventArgs e)
+    {
+        OpenViewCreate();
+    }
+
+    private void OpenViewCreate()
+    {
+        CreateCity createCity = new CreateCity();
+        createCity.Show();
     }
 }
