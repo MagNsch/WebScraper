@@ -97,7 +97,7 @@ public class WebscraperDataAccess : IWebscraperDataAccess
                     .Select(value =>
                     {
                         int index = value.IndexOf("0");
-                        if (index >= 0) { return value.Remove(index, 1); } // Fjern den første forekomst af "0"
+                        if (index >= 0) { return value.Remove(index, 1); }
                         return value;
                     }).DefaultIfEmpty("null").ToList();
         return getWindyWeather;

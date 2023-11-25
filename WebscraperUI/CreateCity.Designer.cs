@@ -90,11 +90,11 @@
             // 
             CreateCityLabelHeader.AutoSize = true;
             CreateCityLabelHeader.Font = new Font("Segoe UI", 30F, FontStyle.Regular, GraphicsUnit.Point);
-            CreateCityLabelHeader.Location = new Point(305, 90);
+            CreateCityLabelHeader.Location = new Point(226, 81);
             CreateCityLabelHeader.Name = "CreateCityLabelHeader";
-            CreateCityLabelHeader.Size = new Size(179, 54);
+            CreateCityLabelHeader.Size = new Size(365, 54);
             CreateCityLabelHeader.TabIndex = 7;
-            CreateCityLabelHeader.Text = "Opret By";
+            CreateCityLabelHeader.Text = "Indtast oplysninger";
             // 
             // CreateCityButton
             // 
@@ -102,7 +102,7 @@
             CreateCityButton.Name = "CreateCityButton";
             CreateCityButton.Size = new Size(130, 43);
             CreateCityButton.TabIndex = 8;
-            CreateCityButton.Text = "button1";
+            CreateCityButton.Text = "Opret by";
             CreateCityButton.UseVisualStyleBackColor = true;
             CreateCityButton.Click += CreateCityButton_Click;
             // 
