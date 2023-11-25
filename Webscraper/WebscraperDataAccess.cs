@@ -142,20 +142,20 @@ public class WebscraperDataAccess : IWebscraperDataAccess
         return Task.FromResult(string.Empty);
     }
 
-    public Task<string> ScrapeCityInfo(HtmlDocument htmlDocument)
-    {
-        var allDataList = new List<string>();
-        var getCityInfo = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("page-header__location-details"));
-        if (getCityInfo != null)
-        {
-            foreach (var item in getCityInfo)
-            {
-                string cityInfo = item.InnerText.Trim();
-                allDataList.Add(cityInfo);
-                string allDataAsString = string.Join(Environment.NewLine, allDataList);
-                return Task.FromResult(allDataAsString);
-            }
-        }
-        return Task.FromResult(string.Empty);
-    }
+    //public Task<string> ScrapeCityInfo(HtmlDocument htmlDocument)
+    //{
+    //    var allDataList = new List<string>();
+    //    var getCityInfo = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("page-header__location-details"));
+    //    if (getCityInfo != null)
+    //    {
+    //        foreach (var item in getCityInfo)
+    //        {
+    //            string cityInfo = item.InnerText.Trim();
+    //            allDataList.Add(cityInfo);
+    //            string allDataAsString = string.Join(Environment.NewLine, allDataList);
+    //            return Task.FromResult(allDataAsString);
+    //        }
+    //    }
+    //    return Task.FromResult(string.Empty);
+    //}
 }

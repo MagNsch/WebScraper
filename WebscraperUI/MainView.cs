@@ -80,10 +80,10 @@ public partial class MainView : Form
             Website website = (Website)Websites_List.SelectedItem;
             var htmldoc = await _webScraperDataAccess.Htmlpackage(website);
             string city = await _webScraperDataAccess.ScrapeCity(htmldoc);
-            string cityInfo = await _webScraperDataAccess.ScrapeCityInfo(htmldoc);
+            //string cityInfo = await _webScraperDataAccess.ScrapeCityInfo(htmldoc);
             string cityWeather = await _webScraperDataAccess.Scrapesite(htmldoc);
             CityLabel.Text = city;
-            CityInfo.Text = cityInfo;
+            //CityInfo.Text = cityInfo;
             Weather_label.Text = cityWeather;
         }
 

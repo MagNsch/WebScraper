@@ -13,5 +13,5 @@ public class Website
     public string Url { get; set; }
 
 
-    public override string? ToString() => $"Id: {Id}, City: {City}";
+    public override string? ToString() => $"By: {City}";
 }

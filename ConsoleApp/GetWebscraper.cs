@@ -4,6 +4,8 @@ namespace Webscraper;
 
 public class GetWebscraper
 {
+
+    //Does not work -
     private static async Task<HtmlDocument> Htmlpackage(string url)
     {
         var httpClient = new HttpClient();
@@ -57,7 +59,15 @@ public class GetWebscraper
     private static async Task Scrapesite(HtmlDocument htmlDocument)
     {
         var getDate = htmlDocument.DocumentNode.Descendants("h3").Where(node => node.GetAttributeValue("class", "").Contains("daily-weather-list-item__date-heading")).ToList();
-        var getHighestTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("temperature min-max-temperature__max temperature--warm")).ToList();
+        var getHighestTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node =>
+                node.GetAttributeValue("class", "")
+                    .Split(' ')
+                    .Contains("temperature") &&
+                node.GetAttributeValue("class", "").Contains("min-max-temperature__max") &&
+                (node.GetAttributeValue("class", "").Contains("temperature--warm") ||
+                 node.GetAttributeValue("class", "").Contains("temperature--cold"))
+            ).ToList();
+
         var getLowestTemperature = htmlDocument.DocumentNode.Descendants("span").Where(node => node.GetAttributeValue("class", "").Contains("temperature min-max-temperature__min temperature--warm")).ToList();
         var getCity = htmlDocument.DocumentNode.Descendants("h1").Where(node => node.GetAttributeValue("class", "page-header__location").Contains(""));
 
@@ -105,25 +115,5 @@ public class GetWebscraper
         }
     }
 
-    //Uden at bruge LINQ
-
-    //    var getDate = new List<HtmlNode>();
-    //    var nodes = htmlDocument.DocumentNode.Descendants("h3");
-
-    //      foreach (var node in nodes)
-    //      {
-    //          var classAttribute = node.GetAttributeValue("class", "");
-    //           if (classAttribute.Contains("daily-weather-list-item__date-heading"))
-    //      {
-    //          getDate.Add(node);
-    //      }
-    //}
-
-    // getDate indeholder nu de ønskede HTML-noder
-
-
-
-
-
-
+    //Does not work - 
 }

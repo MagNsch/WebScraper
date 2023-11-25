@@ -116,7 +116,6 @@ partial class MainView
         CityInfo.Name = "CityInfo";
         CityInfo.Size = new Size(469, 44);
         CityInfo.TabIndex = 2;
-        CityInfo.Text = "Byinfo";
         // 
         // CityLabel
         // 

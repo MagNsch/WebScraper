@@ -9,5 +9,5 @@ public interface IWebscraperDataAccess
     Task<string> Scrapesite(HtmlDocument htmlDocument);
     Task<int> CreateWebsite(Website website);
     Task<string> ScrapeCity(HtmlDocument htmlDocument);
-    Task<string> ScrapeCityInfo(HtmlDocument htmlDocument);
+    //Task<string> ScrapeCityInfo(HtmlDocument htmlDocument);
 }
