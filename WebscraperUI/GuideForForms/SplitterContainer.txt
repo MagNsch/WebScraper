@@ -1,0 +1,1 @@
+SplitterDistance attribute on the splittercontainer to adjust the size between the two

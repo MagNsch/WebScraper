@@ -52,10 +52,7 @@ public partial class MainView : Form
         {
             Websites_List.SelectedIndex = 0;
         }
-        else
-        {
-            Websites_List = null;
-        }
+        
 
 
         // Starter programmet med det første element, hvis listen ikke er tom
