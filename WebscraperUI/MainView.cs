@@ -17,16 +17,12 @@ public partial class MainView : Form
         CreateWebsites();
 
     }
-
-
     public void AddWebsiteToList(Website website)
     {
         websites.Add(website);
 
         Websites_List.DataSource = websites;
     }
-
-
 
     private void CreateWebsites()
     {
@@ -51,10 +47,14 @@ public partial class MainView : Form
         {
             Websites_List.Items.Add(item);
         }
-
-        if(websites.Any())
+        
+        if (websites.Any())
         {
             Websites_List.SelectedIndex = 0;
+        }
+        else
+        {
+            Websites_List = null;
         }
 
 
